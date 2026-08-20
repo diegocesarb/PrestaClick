@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.viewmodel.LoanViewModel
 
@@ -44,7 +45,25 @@ fun DebtorLoansScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("Monto: $${loan.montoPrestado}", style = MaterialTheme.typography.titleMedium)
-                        Text("Estado: ${loan.estado}", style = MaterialTheme.typography.bodySmall)
+                        if (loan.nombrePeriodo.isNotEmpty()) {
+                            Text("Periodo: ${loan.nombrePeriodo}", style = MaterialTheme.typography.bodyMedium)
+                        }
+                        if (loan.estado == "FINALIZADO") {
+                            Surface(
+                                color = androidx.compose.ui.graphics.Color.Green,
+                                shape = MaterialTheme.shapes.small,
+                                modifier = Modifier.padding(top = 4.dp)
+                            ) {
+                                Text(
+                                    "PRÉSTAMO FINALIZADO",
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = androidx.compose.ui.graphics.Color.White
+                                )
+                            }
+                        } else {
+                            Text("Estado: ACTIVO", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                        }
                     }
                 }
             }

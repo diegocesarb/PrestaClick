@@ -40,4 +40,10 @@ interface LoanDao {
 
     @Update
     suspend fun updateInstallment(installment: DailyInstallmentEntity)
+
+    @Query("SELECT COUNT(*) FROM installments WHERE loanId = :loanId AND estadoPago != 'PAGADO'")
+    suspend fun getUnpaidInstallmentsCount(loanId: Int): Int
+
+    @Update
+    suspend fun updateLoan(loan: LoanEntity)
 }

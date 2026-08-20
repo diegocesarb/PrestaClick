@@ -36,9 +36,9 @@ class LoanViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // Debtor actions
-    fun addDebtor(nombre: String, telefono: String, direccion: String) {
+    fun addDebtor(nombre: String, telefono: String, direccion: String, observaciones: String = "") {
         viewModelScope.launch {
-            repository.insertDebtor(DebtorEntity(nombre = nombre, telefono = telefono, direccion = direccion))
+            repository.insertDebtor(DebtorEntity(nombre = nombre, telefono = telefono, direccion = direccion, observaciones = observaciones))
         }
     }
 

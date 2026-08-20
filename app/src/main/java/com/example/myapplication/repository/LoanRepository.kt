@@ -58,5 +58,25 @@ class LoanRepository(private val loanDao: LoanDao) {
 
     suspend fun updateInstallment(installment: DailyInstallmentEntity) {
         loanDao.updateInstallment(installment)
+        checkAndUpdateLoanStatus(installment.loanId)
+    }
+
+    private suspend fun checkAndUpdateLoanStatus(loanId: Int) {
+        val unpaidCount = loanDao.getUnpaidInstallmentsCount(loanId)
+        if (unpaidCount == 0) {
+            val loan = loanDao.getLoanById(loanId)
+            loan?.let {
+                if (it.estado != "FINALIZADO") {
+                    loanDao.updateLoan(it.copy(estado = "FINALIZADO"))
+                }
+            }
+        } else {
+            val loan = loanDao.getLoanById(loanId)
+            loan?.let {
+                if (it.estado == "FINALIZADO") {
+                    loanDao.updateLoan(it.copy(estado = "ACTIVO"))
+                }
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [DebtorEntity::class, LoanEntity::class, DailyInstallmentEntity::class], version = 2, exportSchema = false)
+@Database(entities = [DebtorEntity::class, LoanEntity::class, DailyInstallmentEntity::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun loanDao(): LoanDao
 

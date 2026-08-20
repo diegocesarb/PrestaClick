@@ -8,6 +8,7 @@ data class DebtorEntity(
     val nombre: String,
     val telefono: String,
     val direccion: String,
+    val observaciones: String = "",
     val fechaRegistro: Long = System.currentTimeMillis()
 )
 
