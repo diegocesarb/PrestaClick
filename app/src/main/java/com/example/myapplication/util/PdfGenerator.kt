@@ -66,25 +66,43 @@ object PdfGenerator {
         canvas.drawText("Historial de Pagos (30 días)", 50f, y, headerPaint)
         y += 30f
         
-        canvas.drawText("Día", 50f, y, headerPaint)
-        canvas.drawText("Fecha", 100f, y, headerPaint)
-        canvas.drawText("Esperado", 250f, y, headerPaint)
-        canvas.drawText("Pagado", 350f, y, headerPaint)
-        canvas.drawText("Estado", 450f, y, headerPaint)
-        
+        fun drawTableHeader(canvas: Canvas, yPos: Float) {
+            canvas.drawText("Día", 50f, yPos, headerPaint)
+            canvas.drawText("Fecha", 100f, yPos, headerPaint)
+            canvas.drawText("Esperado", 250f, yPos, headerPaint)
+            canvas.drawText("Pagado", 350f, yPos, headerPaint)
+            canvas.drawText("Estado", 450f, yPos, headerPaint)
+        }
+
+        drawTableHeader(canvas, y)
         y += 20f
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         
+        var currentPage = page
+        var currentCanvas = canvas
+        var pageNum = 1
+
         installments.forEach { installment ->
-            canvas.drawText(installment.numeroDia.toString(), 50f, y, contentPaint)
-            canvas.drawText(sdf.format(Date(installment.fechaProgramada)), 100f, y, contentPaint)
-            canvas.drawText("$${installment.montoEsperado}", 250f, y, contentPaint)
-            canvas.drawText("$${installment.montoPagado}", 350f, y, contentPaint)
-            canvas.drawText(installment.estadoPago, 450f, y, contentPaint)
+            if (y > 780f) {
+                pdfDocument.finishPage(currentPage)
+                pageNum++
+                val newPageInfo = PdfDocument.PageInfo.Builder(595, 842, pageNum).create()
+                currentPage = pdfDocument.startPage(newPageInfo)
+                currentCanvas = currentPage.canvas
+                y = 50f
+                drawTableHeader(currentCanvas, y)
+                y += 30f
+            }
+
+            currentCanvas.drawText(installment.numeroDia.toString(), 50f, y, contentPaint)
+            currentCanvas.drawText(sdf.format(Date(installment.fechaProgramada)), 100f, y, contentPaint)
+            currentCanvas.drawText("$${installment.montoEsperado}", 250f, y, contentPaint)
+            currentCanvas.drawText("$${installment.montoPagado}", 350f, y, contentPaint)
+            currentCanvas.drawText(installment.estadoPago, 450f, y, contentPaint)
             y += 20f
         }
 
-        pdfDocument.finishPage(page)
+        pdfDocument.finishPage(currentPage)
 
         val fileName = "Reporte_${debtor.nombre.replace(" ", "_")}_${System.currentTimeMillis()}.pdf"
         val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName)

@@ -72,19 +72,32 @@ fun AddDebtorDialog(onDismiss: () -> Unit, onConfirm: (String, String, String) -
     var nombre by remember { mutableStateOf("") }
     var telefono by remember { mutableStateOf("") }
     var direccion by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Nuevo Deudor") },
         text = {
             Column {
-                TextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") })
+                TextField(
+                    value = nombre,
+                    onValueChange = { nombre = it; if(it.isNotBlank()) showError = false },
+                    label = { Text("Nombre") },
+                    isError = showError,
+                    supportingText = { if(showError) Text("El nombre es obligatorio") }
+                )
                 TextField(value = telefono, onValueChange = { telefono = it }, label = { Text("Teléfono") })
                 TextField(value = direccion, onValueChange = { direccion = it }, label = { Text("Dirección") })
             }
         },
         confirmButton = {
-            Button(onClick = { onConfirm(nombre, telefono, direccion) }) { Text("Guardar") }
+            Button(onClick = {
+                if (nombre.isNotBlank()) {
+                    onConfirm(nombre, telefono, direccion)
+                } else {
+                    showError = true
+                }
+            }) { Text("Guardar") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancelar") }

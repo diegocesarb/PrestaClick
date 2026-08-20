@@ -33,6 +33,7 @@ fun LoanDetailScreen(
     
     val loan = loans.find { it.id == loanId }
     val debtor = debtors.find { it.id == debtorId }
+    val isCompleted = installments.isNotEmpty() && installments.all { it.estadoPago == "PAGADO" }
 
     var selectedInstallment by remember { mutableStateOf<DailyInstallmentEntity?>(null) }
     var showPaymentDialog by remember { mutableStateOf(false) }
@@ -63,6 +64,21 @@ fun LoanDetailScreen(
             loan?.let {
                 if (it.nombrePeriodo.isNotEmpty()) {
                     Text("Periodo: ${it.nombrePeriodo}", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
+                }
+            }
+            if (isCompleted) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Surface(
+                    color = Color.Green,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    Text(
+                        "PRÉSTAMO FINALIZADO",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.White
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
