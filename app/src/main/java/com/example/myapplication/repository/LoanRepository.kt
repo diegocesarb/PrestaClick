@@ -31,6 +31,10 @@ class LoanRepository(private val loanDao: LoanDao) {
 
     suspend fun getLoanById(id: Int) = loanDao.getLoanById(id)
 
+    suspend fun deleteLoan(loan: LoanEntity) {
+        loanDao.deleteLoan(loan)
+    }
+
     suspend fun createLoanWithInstallments(loan: LoanEntity) {
         val loanId = loanDao.insertLoan(loan).toInt()
         

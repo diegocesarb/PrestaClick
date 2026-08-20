@@ -31,6 +31,9 @@ interface LoanDao {
     @Query("SELECT * FROM loans WHERE id = :id")
     suspend fun getLoanById(id: Int): LoanEntity?
 
+    @Delete
+    suspend fun deleteLoan(loan: LoanEntity)
+
     // Installment operations
     @Insert
     suspend fun insertInstallments(installments: List<DailyInstallmentEntity>)

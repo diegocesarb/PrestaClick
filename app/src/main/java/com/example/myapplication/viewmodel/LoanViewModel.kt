@@ -76,6 +76,12 @@ class LoanViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun deleteLoan(loan: LoanEntity) {
+        viewModelScope.launch {
+            repository.deleteLoan(loan)
+        }
+    }
+
     // Installment actions
     fun loadInstallmentsForLoan(loanId: Int) {
         viewModelScope.launch {
