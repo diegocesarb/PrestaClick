@@ -10,6 +10,7 @@ import com.example.myapplication.data.LoanEntity
 import com.example.myapplication.repository.LoanRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class LoanViewModel(application: Application) : AndroidViewModel(application) {
@@ -55,8 +56,10 @@ class LoanViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // Loan actions
+    private var loansJob: Job? = null
     fun loadLoansForDebtor(debtorId: Int) {
-        viewModelScope.launch {
+        loansJob?.cancel()
+        loansJob = viewModelScope.launch {
             repository.getLoansForDebtor(debtorId).collect {
                 _selectedDebtorLoans.value = it
             }
@@ -83,8 +86,11 @@ class LoanViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // Installment actions
+    private var installmentsJob: Job? = null
     fun loadInstallmentsForLoan(loanId: Int) {
-        viewModelScope.launch {
+        installmentsJob?.cancel()
+        _selectedLoanInstallments.value = emptyList()
+        installmentsJob = viewModelScope.launch {
             repository.getInstallmentsForLoan(loanId).collect {
                 _selectedLoanInstallments.value = it
             }
